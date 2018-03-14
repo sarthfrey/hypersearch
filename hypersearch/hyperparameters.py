@@ -35,7 +35,7 @@ class QualitativeParameter(CategoricalParameter):
                 self.id_category_map = dict((id, categories[id]) for id in self.ids)
 
 	def sample(self, num_samples=None):
-		return CategoricalParameter.sample(self, self.ids, num_samples)
+		return CategoricalParameter.sample(self, self.categories, num_samples)
 
 
 class ContinuousParameter(NumericalParameter):
@@ -55,3 +55,13 @@ class DiscreteParameter(NumericalParameter, CategoricalParameter):
 
         def sample(self, num_samples=None):
                 return CategoricalParameter.sample(self, self.categories, num_samples)
+
+
+class ParameterSet(object):
+
+	def __init__(self, parameters):
+		self.parameters = parameters
+		self.parameter_dict = dict((parameter.name, parameter) for parameter in parameters)
+
+	def get_random(self):
+		return dict((parameter.name, parameter.sample()) for parameter in self.parameters)
