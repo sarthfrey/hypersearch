@@ -1,0 +1,14 @@
+dropout_keep_prob:
+  type: real
+  lower_bound: 0
+  upper_bound: 1
+
+model_architecture:
+  type: qualitative
+  categories: [cnn, lstm, ffnn]
+
+num_neurons:
+  type: discrete
+  lower_bound: 1
+  upper_bound: 500
+  step: 1

@@ -28,7 +28,8 @@ class NumericalParameter(Parameter):
 
 class QualitativeParameter(CategoricalParameter):
 
-	def __init__(self, name, categories):
+	def __init__(self, name, categories, type='qualitative'):
+		assert type == 'qualitative'
 		CategoricalParameter.__init__(self, name, categories)
 		self.ids = range(self.num_categories)
                 self.category_id_map = dict((categories[id], id) for id in self.ids)
@@ -38,9 +39,10 @@ class QualitativeParameter(CategoricalParameter):
 		return CategoricalParameter.sample(self, self.categories, num_samples)
 
 
-class ContinuousParameter(NumericalParameter):
+class RealParameter(NumericalParameter):
 
-	def __init__(self, name, lower_bound, upper_bound):
+	def __init__(self, name, lower_bound, upper_bound, type='real'):
+		assert type == 'real'
 		NumericalParameter.__init__(self, name, lower_bound, upper_bound)
 
 	def sample(self, num_samples=None):
@@ -49,9 +51,10 @@ class ContinuousParameter(NumericalParameter):
 
 class DiscreteParameter(NumericalParameter, CategoricalParameter):
 
-        def __init__(self, name, lower_bound, upper_bound, step):
-                NumericalParameter.__init__(self, name, lower_bound, upper_bound)
-                CategoricalParameter.__init__(self, name, categories=np.arange(lower_bound, upper_bound, step))
+        def __init__(self, name, lower_bound, upper_bound, step=1, type='discrete'):
+		assert type == 'discrete'
+		NumericalParameter.__init__(self, name, lower_bound, upper_bound)
+		CategoricalParameter.__init__(self, name, categories=np.arange(lower_bound, upper_bound, step))
 
         def sample(self, num_samples=None):
                 return CategoricalParameter.sample(self, self.categories, num_samples)
@@ -60,8 +63,18 @@ class DiscreteParameter(NumericalParameter, CategoricalParameter):
 class ParameterSet(object):
 
 	def __init__(self, parameters):
-		self.parameters = parameters
-		self.parameter_dict = dict((parameter.name, parameter) for parameter in parameters)
+		self.parameter_dict = {}
+		for name, parameter in parameters.items():
+			parameter['name'] = name
+			if parameter['type'] == 'real':
+				self.parameter_dict[name] = RealParameter(**parameter)
+			elif parameter['type'] == 'discrete':
+				self.parameter_dict[name] = DiscreteParameter(**parameter)
+			elif parameter['type'] == 'qualitative':
+				self.parameter_dict[name] = QualitativeParameter(**parameter)
+			else:
+				raise ValueError('parameter type is unsupported')
 
-	def get_random(self):
-		return dict((parameter.name, parameter.sample()) for parameter in self.parameters)
+	def sample(self):
+		return {name: parameter.sample() for name, parameter in self.parameter_dict.items()}
+
