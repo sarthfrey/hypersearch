@@ -1,13 +1,16 @@
+import yaml
 import numpy as np
 from ..config import ConfigFile
 from ..hyperparameters import ParameterSet
+
 
 class Searcher(object):
 
 	def __init__(self, obj_func, n_iter, param_file):
 		self._obj_func = obj_func
 		self._n_iter = n_iter
-		self._param_def = ConfigFile(param_file).load()
+		with open(param_file, 'r') as f:
+			self._param_def = yaml.load(f)
 		self._param_set = ParameterSet(self.param_def)
 		self._results = []
 
