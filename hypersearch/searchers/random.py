@@ -10,6 +10,6 @@ class RandomSearcher(Searcher):
 	def search(self):
 		for i in range(self.n_iter):
 			params = self.sample_params()
-			result = self.obj_func(params)
-			self.results.append({'result': result, 'params': params})
+			meta_dict = self.obj_func(params)
+			self.results.append({'objective': meta_dict['objective'], 'meta_dict': meta_dict, 'hyperparams': params})
 

@@ -18,7 +18,7 @@ class Searcher(object):
 		return self.param_set.sample()
 
 	def best_result(self):
-		return max(self.results, key=lambda result_dict: result_dict['result'])
+		return max(self.results, key=lambda result_dict: result_dict['objective'])
 
         @property
         def obj_func(self):
