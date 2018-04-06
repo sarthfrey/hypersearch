@@ -1,5 +1,5 @@
 import docopt
-from hypersearch.searchers.random import RandomSearcher
+from hypersearch.searchers import RandomSearcher
 
 
 def f(params):

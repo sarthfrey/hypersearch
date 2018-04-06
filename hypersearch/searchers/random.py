@@ -1,5 +1,5 @@
 import numpy as np
-from ..searchers import Searcher
+from ..searchers.base import Searcher
 
 
 class RandomSearcher(Searcher):
