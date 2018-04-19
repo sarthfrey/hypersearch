@@ -1,4 +1,5 @@
 import yaml
+import math
 import numpy as np
 from ..config import ConfigFile
 from ..hyperparameters import ParameterSet
@@ -18,7 +19,7 @@ class Searcher(object):
 		return self.param_set.sample()
 
 	def best_result(self):
-		return max(self.results, key=lambda result_dict: result_dict['objective'])
+		return max(filter(lambda result_dict: not math.isnan(result_dict['objective']), self.results), key=lambda result_dict: result_dict['objective'])
 
         @property
         def obj_func(self):
